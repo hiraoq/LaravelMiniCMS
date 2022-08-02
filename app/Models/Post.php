@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Post
@@ -26,4 +27,23 @@ class Post extends Model
         'is_public' => 'bool',
         'published_at' => 'datetime'
     ];
+
+    public function scopePublic(Builder $query)
+    {
+        return $query->where('is_public', true);
+    }
+
+    public function scopePublicList(Builder $query)
+    {
+        return $query
+            ->public()
+            ->latest('publishe_at')
+            ->paginate(10);
+    }
+
+    // 公開記事をIDで取得
+    public function scopePublicFindById(Builder $query, int $id)
+    {
+        return $query->public()->findOrFail($id);
+    }
 }
